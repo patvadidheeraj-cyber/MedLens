@@ -27,8 +27,8 @@ class Report(Base):
     __tablename__ = "reports"
 
     id = Column(Integer, primary_key=True, index=True)
-    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
-    uploaded_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False, index=True)
+    uploaded_by = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
 
     filename = Column(String(255), nullable=False)
     original_filename = Column(String(255), nullable=False)
@@ -62,7 +62,7 @@ class LabResult(Base):
     __tablename__ = "lab_results"
 
     id = Column(Integer, primary_key=True, index=True)
-    report_id = Column(Integer, ForeignKey("reports.id"), nullable=False)
+    report_id = Column(Integer, ForeignKey("reports.id"), nullable=False, index=True)
 
     test_name = Column(String(255), nullable=False)
     value_raw = Column(String(100), nullable=False)   # exactly as extracted
@@ -95,8 +95,8 @@ class Conflict(Base):
     __tablename__ = "conflicts"
 
     id = Column(Integer, primary_key=True, index=True)
-    report_id = Column(Integer, ForeignKey("reports.id"), nullable=False)
-    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False)
+    report_id = Column(Integer, ForeignKey("reports.id"), nullable=False, index=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"), nullable=False, index=True)
 
     test_name = Column(String(255), nullable=False)
     conflict_type = Column(String(100), nullable=False)  # e.g. "value_change", "unit_mismatch"
