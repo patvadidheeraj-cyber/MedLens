@@ -36,7 +36,18 @@ def on_startup():
         print(f"Startup seeding warning: {e}")
 
 
+@app.get("/api/v1/seed")
+def seed_route():
+    try:
+        from seed import seed_database
+        seed_database()
+        return {"status": "success", "message": "Database seeded with doctor@medlens.com / Password123! and sample patients."}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "MedLens API"}
+
 
