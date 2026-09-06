@@ -11,7 +11,6 @@ import DashboardPage from './pages/DashboardPage';
 import PatientsPage from './pages/PatientsPage';
 import PatientProfilePage from './pages/PatientProfilePage';
 import ReportsPage from './pages/ReportsPage';
-import ComparisonsPage from './pages/ComparisonsPage';
 import ConflictsPage from './pages/ConflictsPage';
 import SettingsPage from './pages/SettingsPage';
 
@@ -41,7 +40,6 @@ function AppRoutes() {
       <Route path="/patients"       element={<RequireAuth><PatientsPage /></RequireAuth>} />
       <Route path="/patients/:id"   element={<RequireAuth><PatientProfilePage /></RequireAuth>} />
       <Route path="/reports"        element={<RequireAuth><ReportsPage /></RequireAuth>} />
-      <Route path="/comparisons"    element={<RequireAuth><ComparisonsPage /></RequireAuth>} />
       <Route path="/conflicts"      element={<RequireAuth><ConflictsPage /></RequireAuth>} />
       <Route path="/settings"       element={<RequireAuth><SettingsPage /></RequireAuth>} />
 

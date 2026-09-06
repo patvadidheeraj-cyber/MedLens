@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, UserPlus, MoreHorizontal, Edit2, Trash2, Eye, Calendar, Users } from 'lucide-react';
+import { Search, UserPlus, Edit2, Trash2, Eye, Calendar, Users } from 'lucide-react';
 import { patientService } from '../services/medlens';
 import type { Patient, PatientCreate } from '../types';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -57,18 +57,18 @@ function PatientForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>
+        <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm">{error}</div>
       )}
 
       {/* USER PROVIDED label */}
-      <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200">
-        <span className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">User Provided</span>
-        <span className="text-xs text-slate-400">— This information is entered by the user, not AI-generated.</span>
+      <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg border border-gray-200">
+        <span className="text-[10px] font-bold tracking-wider text-gray-500 uppercase">User Provided</span>
+        <span className="text-xs text-gray-400">— This information is entered by the user, not AI-generated.</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="col-span-2">
-          <label className="label" htmlFor="pf-name">Full name <span className="text-red-500">*</span></label>
+          <label className="label" htmlFor="pf-name">Full name <span className="text-rose-500">*</span></label>
           <input id="pf-name" className="input" value={form.name} onChange={set('name')} placeholder="Patient full name" required />
         </div>
         <div>
@@ -128,7 +128,6 @@ export default function PatientsPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [editTarget, setEditTarget] = useState<Patient | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Patient | null>(null);
-  const [menuOpen, setMenuOpen] = useState<number | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -172,7 +171,7 @@ export default function PatientsPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1>Patients</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{total} patient{total !== 1 ? 's' : ''} total</p>
+          <p className="text-gray-500 text-sm mt-0.5">{total} patient{total !== 1 ? 's' : ''} total</p>
         </div>
         <button id="add-patient-btn" onClick={() => setShowAdd(true)} className="btn-primary">
           <UserPlus size={16} /> Add Patient
@@ -181,7 +180,7 @@ export default function PatientsPage() {
 
       {/* Search */}
       <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
         <input
           id="patient-search"
           type="text"
@@ -200,8 +199,8 @@ export default function PatientsPage() {
           <ErrorMessage title="Failed to load" message={error} onRetry={load} />
         ) : patients.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <Users className="text-slate-300" size={48} />
-            <p className="text-slate-500 font-medium">No patients found</p>
+            <Users className="text-gray-300" size={48} />
+            <p className="text-gray-500 font-medium">No patients found</p>
             <button id="empty-add-patient-btn" onClick={() => setShowAdd(true)} className="btn-primary">
               <UserPlus size={16} /> Add first patient
             </button>
@@ -219,26 +218,26 @@ export default function PatientsPage() {
             </thead>
             <tbody>
               {patients.map((p) => (
-                <tr key={p.id} className="table-row" onClick={() => setMenuOpen(null)}>
+                <tr key={p.id} className="table-row">
                   <td className="table-cell">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 text-sm font-semibold shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-brand-50 ring-1 ring-brand-200 flex items-center justify-center text-brand-700 text-sm font-semibold shrink-0">
                         {getInitials(p.name)}
                       </div>
                       <div>
-                        <Link to={`/patients/${p.id}`} id={`patient-row-${p.id}`} className="font-medium text-slate-900 hover:text-brand-600">
+                        <Link to={`/patients/${p.id}`} id={`patient-row-${p.id}`} className="font-medium text-gray-900 hover:text-brand-600">
                           {p.name}
                         </Link>
-                        <p className="text-xs text-slate-400">{p.patient_id}</p>
+                        <p className="text-xs text-gray-400">{p.patient_id}</p>
                       </div>
                     </div>
                   </td>
                   <td className="table-cell">
                     <span>{ageFromDob(p.date_of_birth)}</span>
-                    {p.sex && <span className="ml-1 text-slate-400">· {p.sex}</span>}
+                    {p.sex && <span className="ml-1 text-gray-400">· {p.sex}</span>}
                   </td>
-                  <td className="table-cell text-slate-600">{p.report_count}</td>
-                  <td className="table-cell text-slate-500 whitespace-nowrap">
+                  <td className="table-cell text-gray-600">{p.report_count}</td>
+                  <td className="table-cell text-gray-500 whitespace-nowrap">
                     <div className="flex items-center gap-1">
                       <Calendar size={12} />
                       {formatDate(p.created_at)}
@@ -249,7 +248,7 @@ export default function PatientsPage() {
                       <button
                         id={`view-patient-${p.id}`}
                         onClick={(e) => { e.stopPropagation(); navigate(`/patients/${p.id}`); }}
-                        className="p-1.5 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition"
+                        className="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition"
                         title="View profile"
                       >
                         <Eye size={15} />
@@ -257,7 +256,7 @@ export default function PatientsPage() {
                       <button
                         id={`edit-patient-${p.id}`}
                         onClick={(e) => { e.stopPropagation(); setEditTarget(p); }}
-                        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition"
+                        className="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition"
                         title="Edit"
                       >
                         <Edit2 size={15} />
@@ -265,7 +264,7 @@ export default function PatientsPage() {
                       <button
                         id={`delete-patient-${p.id}`}
                         onClick={(e) => { e.stopPropagation(); setDeleteTarget(p); }}
-                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                        className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
                         title="Delete"
                       >
                         <Trash2 size={15} />
@@ -294,7 +293,7 @@ export default function PatientsPage() {
       {/* Delete confirm modal */}
       <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete Patient" size="sm">
         <div className="space-y-4">
-          <p className="text-slate-600 text-sm">
+          <p className="text-gray-600 text-sm">
             Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This will permanently
             remove all their reports and extracted data.
           </p>

@@ -34,7 +34,7 @@ export default function ReportsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1>Reports</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{reports.length} report{reports.length !== 1 ? 's' : ''} total</p>
+          <p className="text-gray-500 text-sm mt-0.5">{reports.length} report{reports.length !== 1 ? 's' : ''} total</p>
         </div>
         <button id="reports-refresh-btn" onClick={load} className="btn-secondary" aria-label="Refresh">
           <RefreshCw size={16} />
@@ -48,9 +48,9 @@ export default function ReportsPage() {
           <ErrorMessage title="Failed to load reports" message={error} onRetry={load} />
         ) : reports.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <FileText className="text-slate-300" size={48} />
-            <p className="text-slate-500 font-medium">No reports yet</p>
-            <p className="text-xs text-slate-400">Upload reports from a patient's profile page.</p>
+            <FileText className="text-gray-300" size={48} />
+            <p className="text-gray-500 font-medium">No reports yet</p>
+            <p className="text-xs text-gray-400">Upload reports from a patient's profile page.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -58,9 +58,9 @@ export default function ReportsPage() {
               <thead>
                 <tr>
                   <th className="table-header">Report</th>
-                  <th className="table-header">Patient</th>
                   <th className="table-header">Date</th>
                   <th className="table-header">Type</th>
+                  <th className="table-header">Lab</th>
                   <th className="table-header">Results</th>
                   <th className="table-header">Status</th>
                   <th className="table-header"></th>
@@ -70,21 +70,23 @@ export default function ReportsPage() {
                 {reports.map((r) => (
                   <tr key={r.id} className="table-row">
                     <td className="table-cell">
-                      <div className="flex items-center gap-2">
-                        <FileText size={16} className="text-slate-400 shrink-0" />
-                        <span className="font-medium text-slate-900 truncate max-w-[200px]">{r.original_filename}</span>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                          <FileText size={14} className="text-gray-400" />
+                        </div>
+                        <span className="font-medium text-gray-900 truncate max-w-[200px]">{r.original_filename}</span>
                       </div>
                     </td>
-                    <td className="table-cell text-slate-500">#{r.patient_id}</td>
-                    <td className="table-cell text-slate-500 whitespace-nowrap">{formatDate(r.report_date || r.created_at)}</td>
-                    <td className="table-cell text-slate-500">{r.report_type || '—'}</td>
-                    <td className="table-cell text-slate-500">{r.lab_results.length}</td>
+                    <td className="table-cell text-gray-500 whitespace-nowrap">{formatDate(r.report_date || r.created_at)}</td>
+                    <td className="table-cell text-gray-500">{r.report_type || '—'}</td>
+                    <td className="table-cell text-gray-500">{r.lab_name || '—'}</td>
+                    <td className="table-cell text-gray-500">{r.lab_results.length}</td>
                     <td className="table-cell"><ReportStatusBadge status={r.status} /></td>
                     <td className="table-cell">
                       <button
                         id={`go-to-patient-${r.id}`}
                         onClick={() => navigate(`/patients/${r.patient_id}`)}
-                        className="text-xs text-brand-600 hover:underline"
+                        className="text-xs text-brand-600 hover:underline font-medium"
                       >
                         View Patient
                       </button>

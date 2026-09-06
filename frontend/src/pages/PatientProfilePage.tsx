@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  ArrowLeft, Upload, Edit2, Calendar, User, Pill, AlertTriangle,
-  Activity, FileText, FlaskConical, Brain, Info, ShieldAlert,
-  CheckCircle2, XCircle, Loader2, TrendingDown, TrendingUp, Minus,
-  HelpCircle, ChevronDown, ChevronUp
+  ArrowLeft, Upload, Edit2, Calendar, User, 
+  AlertTriangle, Activity, FileText, FlaskConical, Brain,
+  ShieldAlert, CheckCircle2
 } from 'lucide-react';
 import { patientService, reportService } from '../services/medlens';
-import type { Patient, Report, LabResult, Conflict } from '../types';
+import type { Patient, PatientCreate, Report, LabResult, Conflict } from '../types';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 import { StatusBadge } from '../components/StatusBadge';
@@ -20,8 +19,8 @@ function InfoRow({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
   return (
     <div>
-      <dt className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-0.5">{label}</dt>
-      <dd className="text-sm text-slate-800 whitespace-pre-wrap">{value}</dd>
+      <dt className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">{label}</dt>
+      <dd className="text-sm text-gray-800 whitespace-pre-wrap">{value}</dd>
     </div>
   );
 }
@@ -30,16 +29,16 @@ function TimelineItem({ report, onView }: { report: Report; onView: () => void }
   return (
     <div className="flex gap-4">
       <div className="flex flex-col items-center">
-        <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center shrink-0">
+        <div className="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center shrink-0 ring-1 ring-brand-200">
           <FileText size={14} className="text-brand-600" />
         </div>
-        <div className="w-0.5 bg-slate-100 flex-1 mt-1" />
+        <div className="w-0.5 bg-gray-100 flex-1 mt-1" />
       </div>
       <div className="pb-6 flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-sm font-medium text-slate-900">{report.original_filename}</p>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-sm font-medium text-gray-900">{report.original_filename}</p>
+            <p className="text-xs text-gray-400 mt-0.5">
               {report.report_type || 'Medical Report'} · {formatDate(report.report_date || report.created_at)}
             </p>
           </div>
@@ -48,16 +47,16 @@ function TimelineItem({ report, onView }: { report: Report; onView: () => void }
             <button
               id={`view-report-${report.id}`}
               onClick={onView}
-              className="text-xs text-brand-600 hover:underline"
+              className="text-xs text-brand-600 hover:underline font-medium"
             >
               View
             </button>
           </div>
         </div>
         {report.lab_name && (
-          <p className="text-xs text-slate-500 mt-1">{report.lab_name}</p>
+          <p className="text-xs text-gray-500 mt-1">{report.lab_name}</p>
         )}
-        <p className="text-xs text-slate-400 mt-1">{report.lab_results.length} result{report.lab_results.length !== 1 ? 's' : ''} extracted</p>
+        <p className="text-xs text-gray-400 mt-1">{report.lab_results.length} result{report.lab_results.length !== 1 ? 's' : ''} extracted</p>
       </div>
     </div>
   );
@@ -66,13 +65,13 @@ function TimelineItem({ report, onView }: { report: Report; onView: () => void }
 function LabResultRow({ result }: { result: LabResult }) {
   return (
     <tr className="table-row">
-      <td className="table-cell font-medium text-slate-900">{result.test_name}</td>
-      <td className="table-cell text-slate-700 font-mono text-sm">{result.value_raw}</td>
-      <td className="table-cell text-slate-500">{result.unit || '—'}</td>
-      <td className="table-cell text-slate-500">{result.ref_range_raw || '—'}</td>
+      <td className="table-cell font-medium text-gray-900">{result.test_name}</td>
+      <td className="table-cell text-gray-700 font-mono text-sm">{result.value_raw}</td>
+      <td className="table-cell text-gray-500">{result.unit || '—'}</td>
+      <td className="table-cell text-gray-500">{result.ref_range_raw || '—'}</td>
       <td className="table-cell"><StatusBadge status={result.status} /></td>
-      <td className="table-cell text-slate-500 whitespace-nowrap">{formatDate(result.result_date)}</td>
-      <td className="table-cell text-slate-400 text-xs">{confidencePct(result.confidence)}</td>
+      <td className="table-cell text-gray-500 whitespace-nowrap">{formatDate(result.result_date)}</td>
+      <td className="table-cell text-gray-400 text-xs">{confidencePct(result.confidence)}</td>
     </tr>
   );
 }
@@ -82,7 +81,7 @@ function ConflictCard({ conflict, onResolve }: { conflict: Conflict; onResolve: 
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={`border rounded-xl p-4 ${conflict.resolved ? 'border-slate-100 bg-slate-50' : 'border-amber-200 bg-amber-50'}`}>
+    <div className={`border rounded-xl p-4 ${conflict.resolved ? 'border-gray-200 bg-gray-50' : 'border-amber-200 bg-amber-50'}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-2">
           {conflict.resolved
@@ -90,9 +89,9 @@ function ConflictCard({ conflict, onResolve }: { conflict: Conflict; onResolve: 
             : <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
           }
           <div>
-            <p className="text-sm font-semibold text-slate-900">{conflict.test_name}</p>
-            <p className="text-xs text-slate-500 capitalize mt-0.5">{conflict.conflict_type.replace(/_/g, ' ')}</p>
-            <p className="text-sm text-slate-700 mt-1">{conflict.description}</p>
+            <p className="text-sm font-semibold text-gray-900">{conflict.test_name}</p>
+            <p className="text-xs text-gray-500 capitalize mt-0.5">{conflict.conflict_type.replace(/_/g, ' ')}</p>
+            <p className="text-sm text-gray-700 mt-1">{conflict.description}</p>
             {conflict.resolved && conflict.resolution_note && (
               <p className="text-xs text-emerald-700 mt-1">Resolved: {conflict.resolution_note}</p>
             )}
@@ -135,12 +134,12 @@ function ReportDetail({ report, onClose }: { report: Report; onClose: () => void
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 text-sm">
-        <div><span className="text-slate-400">Type:</span> <span className="text-slate-800">{report.report_type || '—'}</span></div>
-        <div><span className="text-slate-400">Date:</span> <span className="text-slate-800">{formatDate(report.report_date)}</span></div>
-        <div><span className="text-slate-400">Lab:</span> <span className="text-slate-800">{report.lab_name || '—'}</span></div>
-        <div><span className="text-slate-400">Doctor:</span> <span className="text-slate-800">{report.doctor_name || '—'}</span></div>
-        <div><span className="text-slate-400">OCR used:</span> <span className="text-slate-800">{report.ocr_used ? 'Yes' : 'No'}</span></div>
-        <div><span className="text-slate-400">Results:</span> <span className="text-slate-800">{report.lab_results.length}</span></div>
+        <div><span className="text-gray-400">Type:</span> <span className="text-gray-800">{report.report_type || '—'}</span></div>
+        <div><span className="text-gray-400">Date:</span> <span className="text-gray-800">{formatDate(report.report_date)}</span></div>
+        <div><span className="text-gray-400">Lab:</span> <span className="text-gray-800">{report.lab_name || '—'}</span></div>
+        <div><span className="text-gray-400">Doctor:</span> <span className="text-gray-800">{report.doctor_name || '—'}</span></div>
+        <div><span className="text-gray-400">OCR used:</span> <span className="text-gray-800">{report.ocr_used ? 'Yes' : 'No'}</span></div>
+        <div><span className="text-gray-400">Results:</span> <span className="text-gray-800">{report.lab_results.length}</span></div>
       </div>
 
       {report.lab_results.length > 0 && (
@@ -160,8 +159,8 @@ function ReportDetail({ report, onClose }: { report: Report; onClose: () => void
                 <tr key={lr.id} className="table-row">
                   <td className="table-cell font-medium">{lr.test_name}</td>
                   <td className="table-cell font-mono">{lr.value_raw}</td>
-                  <td className="table-cell text-slate-500">{lr.unit || '—'}</td>
-                  <td className="table-cell text-slate-500">{lr.ref_range_raw || '—'}</td>
+                  <td className="table-cell text-gray-500">{lr.unit || '—'}</td>
+                  <td className="table-cell text-gray-500">{lr.ref_range_raw || '—'}</td>
                   <td className="table-cell"><StatusBadge status={lr.status} /></td>
                 </tr>
               ))}
@@ -171,18 +170,111 @@ function ReportDetail({ report, onClose }: { report: Report; onClose: () => void
       )}
 
       {report.ai_summary && (
-        <div className="p-4 rounded-xl bg-blue-50 border border-blue-200">
+        <div className="p-4 rounded-xl bg-brand-50 border border-brand-200">
           <div className="flex items-center gap-2 mb-2">
-            <Brain size={16} className="text-blue-600" />
-            <span className="text-sm font-semibold text-blue-800">AI Summary</span>
-            <span className="text-xs text-blue-500">({report.ai_summary.provider})</span>
+            <Brain size={16} className="text-brand-600" />
+            <span className="text-sm font-semibold text-brand-800">AI Summary</span>
+            <span className="text-xs text-brand-500">({report.ai_summary.provider})</span>
           </div>
-          <p className="text-sm text-blue-900 whitespace-pre-wrap">{report.ai_summary.summary_text}</p>
+          <p className="text-sm text-brand-900 whitespace-pre-wrap">{report.ai_summary.summary_text}</p>
         </div>
       )}
 
       <button onClick={onClose} className="btn-secondary w-full justify-center">Close</button>
     </div>
+  );
+}
+
+/* ── Inline Patient Edit Form ──────────────────────────────────────────────── */
+function PatientEditForm({
+  patient,
+  onSave,
+  onCancel,
+}: {
+  patient: Patient;
+  onSave: (data: PatientCreate) => Promise<void>;
+  onCancel: () => void;
+}) {
+  const [form, setForm] = useState<PatientCreate>({
+    name: patient.name,
+    date_of_birth: patient.date_of_birth || '',
+    sex: patient.sex || '',
+    symptoms: patient.symptoms || '',
+    existing_conditions: patient.existing_conditions || '',
+    allergies: patient.allergies || '',
+    current_medications: patient.current_medications || '',
+    additional_notes: patient.additional_notes || '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const set = (k: keyof PatientCreate) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim()) { setError('Patient name is required.'); return; }
+    setLoading(true);
+    setError('');
+    try {
+      await onSave(form);
+    } catch (err: unknown) {
+      setError((err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Save failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm">{error}</div>}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="col-span-2">
+          <label className="label" htmlFor="edit-name">Full name <span className="text-rose-500">*</span></label>
+          <input id="edit-name" className="input" value={form.name} onChange={set('name')} required />
+        </div>
+        <div>
+          <label className="label" htmlFor="edit-dob">Date of birth</label>
+          <input id="edit-dob" type="date" className="input" value={form.date_of_birth || ''} onChange={set('date_of_birth')} />
+        </div>
+        <div>
+          <label className="label" htmlFor="edit-sex">Sex</label>
+          <select id="edit-sex" className="input" value={form.sex || ''} onChange={set('sex')}>
+            <option value="">Select…</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+            <option value="Unknown">Unknown</option>
+          </select>
+        </div>
+        <div className="col-span-2">
+          <label className="label" htmlFor="edit-symptoms">Symptoms</label>
+          <textarea id="edit-symptoms" className="input resize-none h-20" value={form.symptoms || ''} onChange={set('symptoms')} />
+        </div>
+        <div className="col-span-2">
+          <label className="label" htmlFor="edit-conditions">Existing conditions</label>
+          <textarea id="edit-conditions" className="input resize-none h-16" value={form.existing_conditions || ''} onChange={set('existing_conditions')} />
+        </div>
+        <div>
+          <label className="label" htmlFor="edit-allergies">Allergies</label>
+          <textarea id="edit-allergies" className="input resize-none h-16" value={form.allergies || ''} onChange={set('allergies')} />
+        </div>
+        <div>
+          <label className="label" htmlFor="edit-medications">Current medications</label>
+          <textarea id="edit-medications" className="input resize-none h-16" value={form.current_medications || ''} onChange={set('current_medications')} />
+        </div>
+        <div className="col-span-2">
+          <label className="label" htmlFor="edit-notes">Additional notes</label>
+          <textarea id="edit-notes" className="input resize-none h-16" value={form.additional_notes || ''} onChange={set('additional_notes')} />
+        </div>
+      </div>
+      <div className="flex gap-2 pt-2">
+        <button type="button" onClick={onCancel} className="btn-secondary flex-1 justify-center">Cancel</button>
+        <button id="edit-patient-save-btn" type="submit" disabled={loading} className="btn-primary flex-1 justify-center">
+          {loading ? 'Saving…' : 'Save Changes'}
+        </button>
+      </div>
+    </form>
   );
 }
 
@@ -194,6 +286,7 @@ export default function PatientProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showUpload, setShowUpload] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [viewReport, setViewReport] = useState<Report | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'results' | 'timeline' | 'conflicts' | 'summary'>('overview');
 
@@ -226,6 +319,12 @@ export default function PatientProfilePage() {
     load();
   };
 
+  const handleEditSave = async (data: PatientCreate) => {
+    await patientService.update(Number(id), data);
+    setShowEdit(false);
+    load();
+  };
+
   if (loading) return <LoadingSpinner className="mt-20" size="lg" label="Loading patient profile…" />;
   if (error || !patient) return <ErrorMessage title="Patient not found" message={error} onRetry={load} />;
 
@@ -246,20 +345,20 @@ export default function PatientProfilePage() {
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Back */}
-      <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 transition">
+      <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition">
         <ArrowLeft size={16} /> Back
       </button>
 
       {/* Header */}
       <div className="card p-6 flex items-start justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-brand-100 flex items-center justify-center text-brand-700 text-xl font-bold shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-brand-50 ring-1 ring-brand-200 flex items-center justify-center text-brand-700 text-lg font-bold shrink-0">
             {getInitials(patient.name)}
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">{patient.name}</h1>
-            <div className="flex items-center gap-3 mt-1 text-sm text-slate-500 flex-wrap">
-              <span className="px-2 py-0.5 bg-slate-100 rounded text-xs font-mono">{patient.patient_id}</span>
+            <h1 className="text-xl font-bold text-gray-900">{patient.name}</h1>
+            <div className="flex items-center gap-3 mt-1 text-sm text-gray-500 flex-wrap">
+              <span className="px-2 py-0.5 bg-gray-100 rounded text-xs font-mono">{patient.patient_id}</span>
               {patient.date_of_birth && <span>{ageFromDob(patient.date_of_birth)}</span>}
               {patient.sex && <span>{patient.sex}</span>}
               <span>{reports.length} report{reports.length !== 1 ? 's' : ''}</span>
@@ -277,7 +376,7 @@ export default function PatientProfilePage() {
           <button
             id="edit-patient-profile-btn"
             className="btn-secondary"
-            onClick={() => navigate(`/patients/${id}/edit`)}
+            onClick={() => setShowEdit(true)}
           >
             <Edit2 size={15} /> Edit
           </button>
@@ -285,7 +384,7 @@ export default function PatientProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-slate-200 overflow-x-auto">
+      <div className="flex gap-1 border-b border-gray-200 overflow-x-auto">
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -293,8 +392,8 @@ export default function PatientProfilePage() {
             onClick={() => setActiveTab(tab.key)}
             className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-brand-600 text-brand-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-brand-600 text-brand-700'
+                : 'border-transparent text-gray-500 hover:text-gray-800'
             }`}
           >
             {tab.icon}
@@ -311,8 +410,8 @@ export default function PatientProfilePage() {
             <div className="card p-5 space-y-4">
               <div className="flex items-center gap-2">
                 <User size={16} className="text-brand-600" />
-                <h2 className="text-sm font-semibold text-slate-900">Patient Information</h2>
-                <span className="ml-auto text-[10px] font-bold tracking-wider text-slate-400 uppercase bg-slate-100 px-2 py-0.5 rounded">User Provided</span>
+                <h2 className="text-sm font-semibold text-gray-900">Patient Information</h2>
+                <span className="ml-auto text-[10px] font-bold tracking-wider text-gray-400 uppercase bg-gray-100 px-2 py-0.5 rounded">User Provided</span>
               </div>
               <dl className="space-y-3">
                 <InfoRow label="Date of Birth" value={patient.date_of_birth ? formatDate(patient.date_of_birth) : null} />
@@ -324,25 +423,25 @@ export default function PatientProfilePage() {
                 <InfoRow label="Additional Notes" value={patient.additional_notes} />
               </dl>
               {!patient.symptoms && !patient.existing_conditions && (
-                <p className="text-sm text-slate-400 italic">No clinical information entered.</p>
+                <p className="text-sm text-gray-400 italic">No clinical information entered.</p>
               )}
             </div>
 
             <div className="card p-5 space-y-4">
               <div className="flex items-center gap-2">
                 <Activity size={16} className="text-brand-600" />
-                <h2 className="text-sm font-semibold text-slate-900">Quick Stats</h2>
+                <h2 className="text-sm font-semibold text-gray-900">Quick Stats</h2>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { label: 'Total Reports', value: reports.length, color: 'text-brand-600 bg-brand-50' },
                   { label: 'Lab Results', value: allResults.length, color: 'text-emerald-600 bg-emerald-50' },
                   { label: 'Open Conflicts', value: openConflicts.length, color: 'text-amber-600 bg-amber-50' },
-                  { label: 'Abnormal Results', value: allResults.filter((r) => r.status === 'low' || r.status === 'high').length, color: 'text-red-600 bg-red-50' },
+                  { label: 'Abnormal Results', value: allResults.filter((r) => r.status === 'low' || r.status === 'high').length, color: 'text-rose-600 bg-rose-50' },
                 ].map(({ label, value, color }) => (
-                  <div key={label} className="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <div key={label} className="p-3 rounded-xl bg-gray-50 border border-gray-100">
                     <p className={`text-2xl font-bold ${color.split(' ')[0]}`}>{value}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{label}</p>
                   </div>
                 ))}
               </div>
@@ -355,9 +454,9 @@ export default function PatientProfilePage() {
           <div className="card overflow-hidden">
             {allResults.length === 0 ? (
               <div className="py-16 text-center">
-                <FlaskConical className="text-slate-300 mx-auto mb-3" size={36} />
-                <p className="text-slate-500">No lab results extracted yet.</p>
-                <p className="text-xs text-slate-400 mt-1">Upload a report to extract results.</p>
+                <FlaskConical className="text-gray-300 mx-auto mb-3" size={36} />
+                <p className="text-gray-500">No lab results extracted yet.</p>
+                <p className="text-xs text-gray-400 mt-1">Upload a report to extract results.</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -387,8 +486,8 @@ export default function PatientProfilePage() {
           <div className="card p-6">
             {reports.length === 0 ? (
               <div className="py-12 text-center">
-                <Calendar className="text-slate-300 mx-auto mb-3" size={36} />
-                <p className="text-slate-500">No reports yet.</p>
+                <Calendar className="text-gray-300 mx-auto mb-3" size={36} />
+                <p className="text-gray-500">No reports yet.</p>
               </div>
             ) : (
               <div>
@@ -409,8 +508,8 @@ export default function PatientProfilePage() {
             {allConflicts.length === 0 ? (
               <div className="card py-16 text-center">
                 <CheckCircle2 className="text-emerald-400 mx-auto mb-3" size={36} />
-                <p className="text-slate-500 font-medium">No conflicts detected</p>
-                <p className="text-xs text-slate-400 mt-1">All reports appear consistent.</p>
+                <p className="text-gray-500 font-medium">No conflicts detected</p>
+                <p className="text-xs text-gray-400 mt-1">All reports appear consistent.</p>
               </div>
             ) : (
               allConflicts.map((c) => (
@@ -440,20 +539,20 @@ export default function PatientProfilePage() {
               <div className="card p-6 space-y-3">
                 <div className="flex items-center gap-2">
                   <Brain size={18} className="text-brand-600" />
-                  <h2 className="font-semibold text-slate-900">Patient Summary</h2>
-                  <span className="text-xs text-slate-400 ml-auto">
+                  <h2 className="font-semibold text-gray-900">Patient Summary</h2>
+                  <span className="text-xs text-gray-400 ml-auto">
                     Generated {formatDate(latestSummary.generated_at)} · {latestSummary.provider}
                   </span>
                 </div>
-                <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
+                <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
                   {latestSummary.summary_text}
                 </p>
               </div>
             ) : (
               <div className="card py-16 text-center">
-                <Brain className="text-slate-300 mx-auto mb-3" size={36} />
-                <p className="text-slate-500">No AI summary available yet.</p>
-                <p className="text-xs text-slate-400 mt-1">Upload and process a report to generate a summary.</p>
+                <Brain className="text-gray-300 mx-auto mb-3" size={36} />
+                <p className="text-gray-500">No AI summary available yet.</p>
+                <p className="text-xs text-gray-400 mt-1">Upload and process a report to generate a summary.</p>
               </div>
             )}
           </div>
@@ -467,6 +566,17 @@ export default function PatientProfilePage() {
           onUpload={handleUpload}
           onComplete={() => { setShowUpload(false); load(); }}
         />
+      </Modal>
+
+      {/* Edit patient modal */}
+      <Modal open={showEdit} onClose={() => setShowEdit(false)} title="Edit Patient" size="lg">
+        {patient && (
+          <PatientEditForm
+            patient={patient}
+            onSave={handleEditSave}
+            onCancel={() => setShowEdit(false)}
+          />
+        )}
       </Modal>
 
       {/* Report detail modal */}

@@ -40,7 +40,7 @@ export default function ConflictsPage() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1>Conflicts</h1>
-          <p className="text-slate-500 text-sm mt-0.5">Detected inconsistencies across reports</p>
+          <p className="text-gray-500 text-sm mt-0.5">Detected inconsistencies across reports</p>
         </div>
         <div className="flex gap-2">
           {(['open', 'resolved', 'all'] as const).map((f) => (
@@ -66,8 +66,8 @@ export default function ConflictsPage() {
       ) : conflicts.length === 0 ? (
         <div className="card flex flex-col items-center justify-center py-20 gap-3">
           <CheckCircle2 className="text-emerald-400" size={48} />
-          <p className="text-slate-600 font-medium">No {filter !== 'all' ? filter : ''} conflicts found</p>
-          <p className="text-xs text-slate-400">All reports appear consistent.</p>
+          <p className="text-gray-600 font-medium">No {filter !== 'all' ? filter : ''} conflicts found</p>
+          <p className="text-xs text-gray-400">All reports appear consistent.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -80,15 +80,15 @@ export default function ConflictsPage() {
                     : <AlertTriangle size={18} className="text-amber-600 shrink-0 mt-0.5" />
                   }
                   <div>
-                    <p className="font-semibold text-slate-900">{c.test_name}</p>
-                    <p className="text-xs text-slate-500 capitalize mt-0.5">{c.conflict_type.replace(/_/g, ' ')}</p>
-                    <p className="text-sm text-slate-700 mt-2">{c.description}</p>
+                    <p className="font-semibold text-gray-900">{c.test_name}</p>
+                    <p className="text-xs text-gray-500 capitalize mt-0.5">{c.conflict_type.replace(/_/g, ' ')}</p>
+                    <p className="text-sm text-gray-700 mt-2">{c.description}</p>
                     {c.resolved && c.resolution_note && (
                       <p className="text-xs text-emerald-700 mt-1 flex items-center gap-1">
                         <CheckCircle2 size={11} /> Resolved: {c.resolution_note}
                       </p>
                     )}
-                    <p className="text-xs text-slate-400 mt-2">{formatDate(c.created_at)}</p>
+                    <p className="text-xs text-gray-400 mt-2">{formatDate(c.created_at)}</p>
                   </div>
                 </div>
                 <div className="flex gap-2">

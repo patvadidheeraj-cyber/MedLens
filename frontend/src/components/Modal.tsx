@@ -35,8 +35,8 @@ export function Modal({ open, onClose, title, children, size = 'md' }: Props) {
       ref={overlayRef}
       onClick={(e) => e.target === overlayRef.current && onClose()}
     >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+      {/* Backdrop — simple overlay, no blur */}
+      <div className="absolute inset-0 bg-gray-900/30" />
 
       {/* Dialog */}
       <div
@@ -49,11 +49,11 @@ export function Modal({ open, onClose, title, children, size = 'md' }: Props) {
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h2 id="modal-title" className="text-base font-semibold text-slate-900">{title}</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 id="modal-title" className="text-base font-semibold text-gray-900">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             aria-label="Close dialog"
           >
             <X size={18} />

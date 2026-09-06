@@ -100,7 +100,7 @@ export function UploadDropzone({ patientId: _patientId, onUpload, onComplete }: 
             'flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-10 cursor-pointer transition-all',
             dragging
               ? 'border-brand-500 bg-brand-50'
-              : 'border-slate-200 hover:border-brand-300 hover:bg-slate-50'
+              : 'border-gray-200 hover:border-brand-300 hover:bg-gray-50'
           )}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
@@ -109,10 +109,10 @@ export function UploadDropzone({ patientId: _patientId, onUpload, onComplete }: 
           <div className="w-14 h-14 rounded-full bg-brand-50 flex items-center justify-center mb-4">
             <Upload className="text-brand-600" size={24} />
           </div>
-          <p className="font-medium text-slate-800">Drag &amp; drop file here</p>
-          <p className="text-sm text-slate-500 mt-1">or</p>
+          <p className="font-medium text-gray-800">Drag &amp; drop file here</p>
+          <p className="text-sm text-gray-500 mt-1">or</p>
           <span className="btn-primary mt-3">Browse Files</span>
-          <p className="text-xs text-slate-400 mt-4">PDF, PNG, JPG — max 20 MB</p>
+          <p className="text-xs text-gray-400 mt-4">PDF, PNG, JPG — max 20 MB</p>
           <input
             id="file-upload"
             type="file"
@@ -125,16 +125,16 @@ export function UploadDropzone({ patientId: _patientId, onUpload, onComplete }: 
 
       {/* File preview */}
       {file && stage === 'idle' && (
-        <div className="flex items-center gap-3 p-4 border border-slate-200 rounded-xl bg-slate-50">
+        <div className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl bg-gray-50">
           {file.type === 'application/pdf'
-            ? <FileText className="text-red-500 shrink-0" size={28} />
-            : <Image className="text-blue-500 shrink-0" size={28} />
+            ? <FileText className="text-rose-500 shrink-0" size={28} />
+            : <Image className="text-sky-500 shrink-0" size={28} />
           }
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-800 truncate">{file.name}</p>
-            <p className="text-xs text-slate-500">{fileSize(file.size)}</p>
+            <p className="text-sm font-medium text-gray-800 truncate">{file.name}</p>
+            <p className="text-xs text-gray-500">{fileSize(file.size)}</p>
           </div>
-          <button onClick={reset} className="p-1 text-slate-400 hover:text-slate-600" aria-label="Remove file">
+          <button onClick={reset} className="p-1 text-gray-400 hover:text-gray-600" aria-label="Remove file">
             <X size={16} />
           </button>
         </div>
@@ -142,7 +142,7 @@ export function UploadDropzone({ patientId: _patientId, onUpload, onComplete }: 
 
       {/* Error */}
       {error && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm">
           <AlertCircle size={16} className="shrink-0" />
           {error}
         </div>
@@ -168,7 +168,7 @@ export function UploadDropzone({ patientId: _patientId, onUpload, onComplete }: 
                   'w-6 h-6 rounded-full flex items-center justify-center shrink-0',
                   done ? 'bg-emerald-500 text-white' :
                   active ? 'bg-brand-600 text-white' :
-                  'bg-slate-100 text-slate-400'
+                  'bg-gray-100 text-gray-400'
                 )}>
                   {done ? <CheckCircle2 size={14} /> :
                    active ? <Loader2 size={12} className="animate-spin" /> :
@@ -178,8 +178,8 @@ export function UploadDropzone({ patientId: _patientId, onUpload, onComplete }: 
                 <span className={cn(
                   'text-sm',
                   done ? 'text-emerald-700 font-medium' :
-                  active ? 'text-slate-900 font-medium' :
-                  'text-slate-400'
+                  active ? 'text-gray-900 font-medium' :
+                  'text-gray-400'
                 )}>
                   {step}
                   {done && ' ✓'}
@@ -191,11 +191,11 @@ export function UploadDropzone({ patientId: _patientId, onUpload, onComplete }: 
           {/* Upload progress bar */}
           {uploadPct > 0 && uploadPct < 100 && (
             <div className="mt-3">
-              <div className="flex justify-between text-xs text-slate-500 mb-1">
+              <div className="flex justify-between text-xs text-gray-500 mb-1">
                 <span>Uploading</span>
                 <span>{uploadPct}%</span>
               </div>
-              <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-brand-500 rounded-full transition-all duration-300"
                   style={{ width: `${uploadPct}%` }}
@@ -212,8 +212,8 @@ export function UploadDropzone({ patientId: _patientId, onUpload, onComplete }: 
           <div className="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center">
             <CheckCircle2 className="text-emerald-600" size={32} />
           </div>
-          <p className="font-semibold text-slate-800">Report uploaded successfully!</p>
-          <p className="text-sm text-slate-500">Results are being extracted in the background.</p>
+          <p className="font-semibold text-gray-800">Report uploaded successfully!</p>
+          <p className="text-sm text-gray-500">Results are being extracted in the background.</p>
         </div>
       )}
 
